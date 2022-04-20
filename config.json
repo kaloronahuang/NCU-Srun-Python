@@ -1,0 +1,12 @@
+{
+    "userInfo": {
+        "username": "",
+        "password": "",
+        "domain": ""
+    },
+    "platformInfo": {
+        "loginURL" : "http://222.204.3.154",
+        "device" : "Macintosh",
+        "os": "Mac OS"
+    }
+}
