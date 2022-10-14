@@ -2,7 +2,6 @@
 import json
 import requests
 import urllib.parse
-from bs4 import BeautifulSoup
 import re
 
 from encryption import srun_base64, srun_md5, srun_sha1, srun_xencode
@@ -29,9 +28,9 @@ def getInfo():
     loginInfo['ac_id'] = resp_info['ac_id']
     loginInfo['double_stack'] = 0
     loginInfo['otp'] = False
-    soup = BeautifulSoup(resp.text, 'lxml')
-    ip_info = soup.select('#user_ip')
-    loginInfo['ip'] = ip_info[0].attrs['value']
+    fpos = resp.text.find('<input type=\"hidden\" name=\"user_ip\" id=\"user_ip\" value=\"') + 56
+    segment = resp.text[fpos:fpos + 15]
+    loginInfo['ip'] = re.match(r"[0-9]+.[0-9]+.[0-9]+.[0-9]+", segment).group()
 
 def getChallenge(data):
     data['callback'] = 'jsonp1583251661367'
