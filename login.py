@@ -1,8 +1,6 @@
 # login.py
-import json
-import requests
+import json, requests, re, os, sys
 import urllib.parse
-import re
 
 from encryption import srun_base64, srun_md5, srun_sha1, srun_xencode
 
@@ -14,7 +12,7 @@ header = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 
 
 def readConfig():
     global loginInfo, loginURL, header, device, os
-    configFile = open('config.json')
+    configFile = open(os.path.join(os.path.dirname(sys.argv[0]), 'config.json'))
     configInfo = json.loads(str(configFile.read()))
     loginInfo = configInfo['userInfo']
     loginURL = configInfo['platformInfo']['loginURL']
@@ -43,6 +41,13 @@ def info(d, k):
     return '{SRBX1}' + srun_base64.get_base64(srun_xencode.get_xencode(json.dumps(d), k))
 
 def login():
+    try:
+        baidu_resp = requests.get("https://baidu.com", timeout=5)
+        if baidu_resp.status_code == 200:
+            print('Network available. Exited.')
+            return
+    except:
+        print('Network unavailable. Connecting...')
     username = loginInfo['username'] + '@' + loginInfo['domain']
     params = {'username': username, 'ip': loginInfo['ip']}
     resp = getChallenge(params)
